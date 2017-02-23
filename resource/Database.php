@@ -2,13 +2,12 @@
 //initialize variables to hold connection parameters
 $username = 'root';
 $dsn = 'mysql:host=localhost; dbname=register';
-$password = '';
+$password = 'root';
 
 try{
     //create an instance of the PDO class with the required parameters
     $db = new PDO($dsn, $username, $password);
-
-    //set pdo error mode to exception
+	//set pdo error mode to exception
     $db->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 
     //display success message
@@ -18,3 +17,5 @@ try{
     //display error message
     echo "Connection failed ".$ex->getMessage();
 }
+
+
