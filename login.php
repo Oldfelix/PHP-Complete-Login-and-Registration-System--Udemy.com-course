@@ -16,7 +16,6 @@ if(isset($_POST['loginBtn'])){
         //collect form data
         $user = $_POST['username'];
         $password = $_POST['password'];
-
         //check if user exist in the database
         $sqlQuery = "SELECT * FROM users WHERE username = :username";
         $statement = $db->prepare($sqlQuery);
