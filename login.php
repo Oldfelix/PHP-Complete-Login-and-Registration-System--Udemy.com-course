@@ -16,6 +16,7 @@ if(isset($_POST['loginBtn'])){
         //collect form data
         $user = $_POST['username'];
         $password = $_POST['password'];
+
         //check if user exist in the database
         $sqlQuery = "SELECT * FROM users WHERE username = :username";
         $statement = $db->prepare($sqlQuery);
@@ -29,7 +30,7 @@ if(isset($_POST['loginBtn'])){
            if(password_verify($password, $hashed_password)){
                $_SESSION['id'] = $id;
                $_SESSION['username'] = $username;
-               header("location: index.php");
+               redirectTo('index');
            }else{
                $result = flashMessage("Invalid username or password");
            }
@@ -40,32 +41,48 @@ if(isset($_POST['loginBtn'])){
             $result = flashMessage("There was one error in the form");
         }else{
             $result = flashMessage("There were " .count($form_errors). " error in the form");
-
-			}
+        }
     }
 }
 ?>
 
-<!DOCTYPE html>
-<html>
-<head lang="en">
-    <meta charset="UTF-8">
-    <title>Login Page</title>
-</head>
-<body>
-<h2>User Authentication System </h2><hr>
 
-<h3>Login Form</h3>
 
-<?php if(isset($result)) echo $result; ?>
-<?php if(!empty($form_errors)) echo show_errors($form_errors); ?>
-<form method="post" action="">
-    <table>
-        <tr><td>Username:</td> <td><input type="text" value="" name="username"></td></tr>
-        <tr><td>Password:</td> <td><input type="password" value="" name="password"></td></tr>
-        <tr><td><a href="forgot_password.php">Forgot Password?</a></td><td><input style="float: right;" type="submit" name="loginBtn" value="Signin"></td></tr>
-    </table>
-</form>
-<p><a href="index.php">Back</a> </p>
+<?php
+$page_title = "User Authentication - Login Page";
+include_once 'partials/headers.php';
+?>
+<div class="container">
+	<section class="col col-lg-7">
+	    
+		<h2>Login Form</h2><hr>
+		
+		<?php if(isset($result)) echo $result; ?>
+		<?php if(!empty($form_errors)) echo show_errors($form_errors); ?>
+
+				
+		<form action="" method="post">
+			<div class="form-group">
+				<label for="usernameField">Username</label>
+				<input type="text" class="form-control" name="username" id="usernameField" placeholder="Username">
+			</div>
+			<div class="form-group">
+				<label for="passwordField">Password</label>
+				<input type="password" name="password"class="form-control" id="passwordField" placeholder="Password">
+			</div>
+			
+			<div class="checkbox">
+				<label>
+					<input name="remember" type="checkbox"> Remember Me
+				</label>
+			</div>
+			<a href="forgot_password.php">Forgot Password?</a>
+			<button type="submit" name="loginBtn" class="btn btn-primary pull-right">Sign in</button>
+		</form>
+	</section>
+	<p><a href="index.php">Back</a> </p>
+</div>
+	
+<?php include_once 'partials/footers.php'; ?>
 </body>
 </html>

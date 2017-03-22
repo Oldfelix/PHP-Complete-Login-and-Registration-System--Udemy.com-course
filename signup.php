@@ -3,6 +3,7 @@
 include_once 'resource/Database.php';
 include_once 'resource/utilities.php';
 
+
 //process the form
 if(isset($_POST['signupBtn'])){
     //initialize an array to store any error message from the form
@@ -23,17 +24,23 @@ if(isset($_POST['signupBtn'])){
     //email validation / merge the return data into form_error array
     $form_errors = array_merge($form_errors, check_email($_POST));
 
-    //check if error array is empty, if yes process form data and insert record
-    if(empty($form_errors)){
-        //collect form data and store in variables
+	//collect form data and store in variables
+	
         $email = $_POST['email'];
         $username = $_POST['username'];
         $password = $_POST['password'];
-
+	
+	if(checkDuplicateEntries("users", "email", $email, $db)){
+		$result = flashMessage("Email is already taken, please try another one.");
+	}
+	else if(checkDuplicateEntries("users", "username", $username, $db)){
+		$result = flashMessage("Username is already taken, please try another one.");
+	}
+    //check if error array is empty, if yes process form data and insert record
+    if(empty($form_errors)){
         //hashing the password
         $hashed_password = password_hash($password, PASSWORD_DEFAULT);
         try{
-
             //create SQL insert statement
             $sqlInsert = "INSERT INTO users (username, email, password, join_date)
               VALUES (:username, :email, :password, now())";
@@ -46,44 +53,56 @@ if(isset($_POST['signupBtn'])){
 
             //check if one new row was created
             if($statement->rowCount() == 1){
-                $result = flashMessage("Registration Successful", "Pass");
+				$result = flashMessage("Registration Successful", "Pass");
             }
         }catch (PDOException $ex){
             $result = flashMessage("An error occurred: " .$ex->getMessage());
-        }
+			}
     }
     else{
         if(count($form_errors) == 1){
             $result = flashMessage("There was 1 error in the form<br>");
         }else{
-            $result = flashMessage( There were " .count($form_errors). " errors in the form <br>");
+            $result = flashMessage("There were " .count($form_errors). " errors in the form <br>");
         }
     }
 
 }
 
 ?>
-<!DOCTYPE html>
-<html>
-<head lang="en">
-    <meta charset="UTF-8">
-    <title>Register Page</title>
-</head>
-<body>
-<h2>User Authentication System </h2><hr>
 
-<h3>Registration Form</h3>
-
-<?php if(isset($result)) echo $result; ?>
-<?php if(!empty($form_errors)) echo show_errors($form_errors); ?>
-<form method="post" action="">
-    <table>
-        <tr><td>Email:</td> <td><input type="text" value="" name="email"></td></tr>
-        <tr><td>Username:</td> <td><input type="text" value="" name="username"></td></tr>
-        <tr><td>Password:</td> <td><input type="password" value="" name="password"></td></tr>
-        <tr><td></td><td><input style="float: right;" type="submit" name="signupBtn" value="Signup"></td></tr>
-    </table>
-</form>
-<p><a href="index.php">Back</a> </p>
+<?php
+$page_title = "User Authentication - Register Page";
+include_once 'partials/headers.php';
+?>
+<div class="container">
+	<section class="col col-lg-7">
+	    
+		<h2>Register Page</h2><hr>
+		
+		<?php if(isset($result)) echo $result; ?>
+		<?php if(!empty($form_errors)) echo show_errors($form_errors); ?>
+				
+		<form action="" method="post">
+		    <div class="form-group">
+				<label for="emailField">Email Address</label>
+				<input type="text" class="form-control" name="email" id="emailField" placeholder="Email">
+			</div>
+			<div class="form-group">
+				<label for="usernameField">Username</label>
+				<input type="text" class="form-control" name="username" id="usernameField" placeholder="Username">
+			</div>
+			<div class="form-group">
+				<label for="passwordField">Password</label>
+				<input type="password" class="form-control" name="password" id="passwordField" placeholder="Password">
+			</div>
+						
+			<button type="submit" name="signupBtn" class="btn btn-primary pull-right">Sign up</button>
+		</form>
+	</section>
+	<p><a href="index.php">Back</a> </p>
+</div>
+	
+<?php include_once 'partials/footers.php'; ?>
 </body>
 </html>
