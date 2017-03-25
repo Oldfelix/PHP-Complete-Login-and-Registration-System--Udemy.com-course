@@ -1,47 +1,29 @@
-<<<<<<< HEAD
+<?php
+$page_title = "User Authentication - Homepage";
+include_once 'partials/headers.php';
+?>
 
-<!DOCTYPE html>
-<html>
-<head lang="en">
-    <meta charset="UTF-8">
-    <title>Homepage</title>
-</head>
-<body>
-<h2>User Authentication System </h2><hr>
+<div class="container">
 
-<?php include_once 'resource/Database.php' ?>
+    <div class="flag">
+        <h1>Turtle Authentication System</h1>
+      </div>
 
+    	<?php if(!isset($_SESSION['username'])): ?>
+            <P class="lead">You are currently not signed in <a href="login.php">Login</a> Not yet a member? <a href="signup.php">Signup</a> </P>
+        <?php else: ?>
 
-<P> Your currently not signed in <a href="login.php">Login</a> Not yet a member? <a href="signup.php">Signup</a> </P>
-<p> You are logged in as {username} <a href="logout.php">Logout</a> </p>
+	        <p class="lead">You are logged in as <?php if(isset($_SESSION['username'])) echo $_SESSION['username']; ?> <a href="logout.php">Logout</a> </p>
+        <?php endif ?>
+				<?php echo $_SERVER['REMOTE_ADDR'] . "<br>" . $_SERVER['HTTP_USER_AGENT'];
+					echo "<br>".time();
+					if(isset($_SESSION['last_active'])){
+							echo "<br>".$_SESSION['last_active'];
+					};
+				?>
+    </div>
 
-
-
-</body>
-</html>
-
-
-=======
-
-<!DOCTYPE html>
-<html>
-<head lang="en">
-    <meta charset="UTF-8">
-    <title>Homepage</title>
-</head>
-<body>
-<h2>User Authentication System </h2><hr>
-
-<?php include_once 'resource/Database.php' ?>
-
-
-<P> Your currently not signed in <a href="login.php">Login</a> Not yet a member? <a href="signup.php">Signup</a> </P>
-<p> You are logged in as {username} <a href="logout.php">Logout</a> </p>
-
-
+<?php include_once 'partials/footers.php'; ?>
 
 </body>
 </html>
-
-
->>>>>>> origin/master
